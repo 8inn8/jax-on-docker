@@ -1,5 +1,5 @@
-from typing import TypeVar, Generic
-from collections import defaultdict
+from typing import TypeVar, Generic, Iterable
+from collections import defaultdict, UserDict
 
 
 def reverse(coll: list) -> list:
@@ -29,3 +29,20 @@ class Graph(Generic[Node, Edge]):
     def get_relations(self, node: Node) -> list[Edge]:
         return self.edges[node]
 
+
+def get_aliases(item) -> Iterable:
+    pass
+
+
+class NutritionalInformation(UserDict):
+    def __getitem__(self, item):
+        try:
+            return self.data[item]
+        except KeyError:
+            pass
+        for alias in get_aliases(item):
+            try:
+                return self.data[alias]
+            except KeyError:
+                pass
+        raise KeyError(f"Could not find {item} or any of its aliases")
