@@ -1,5 +1,6 @@
 from typing import TypeVar, Generic, Iterable
 from collections import defaultdict, UserDict
+import collections.abc as cabc
 
 
 def reverse(coll: list) -> list:
@@ -46,3 +47,18 @@ class NutritionalInformation(UserDict):
             except KeyError:
                 pass
         raise KeyError(f"Could not find {item} or any of its aliases")
+
+
+class AliasedIngredients(cabc.Set):
+    def __init__(self, ingredients: set[str]):
+        self.ingredients = ingredients
+
+    def __contains__(self, item: str):
+        return item in self.ingredients or any(alias in self.ingredients for alias in get_aliases(item))
+
+    def __iter__(self):
+        return iter(self.ingredients)
+
+    def __len__(self):
+        return len(self.ingredients)
+
